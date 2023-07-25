@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jcr.Node;
+import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 
 @Component(property = {
@@ -37,7 +38,14 @@ public class WKNDCustomWorkflow implements WorkflowProcess {
         Node node = page.getContentResource().adaptTo(Node.class);
 
         try {
-            node.setProperty("testValue", "Test Value");
+            // Get the jcr:createdBy property from the Node
+            Property createdByProperty = node.getProperty("jcr:createdBy");
+            String authoredByValue = createdByProperty.getString();
+
+            // Set the value of jcr:createdBy to authoredBy property
+            node.setProperty("authoredBy", authoredByValue);
+
+            // Save the changes made to the Node
             node.getSession().save();
         }catch (RepositoryException repositoryException){
             repositoryException.printStackTrace();
