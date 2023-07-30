@@ -68,7 +68,7 @@ public class WKNDAssetMetadataTitleUpdate implements WorkflowProcess {
 
                     metadataNode.setProperty("title", title);
                     session.save();
-                    logger.info("dc:title property added with value: " + title);
+                    logger.info("title property added with value: " + title);
                 }
             } else {
                 logger.warn("Invalid payload resource or not an asset.");
