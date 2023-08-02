@@ -24,14 +24,14 @@ import javax.jcr.RepositoryException;
 })
 public class WKNDCustomWorkflow implements WorkflowProcess {
 
-    private final Logger logger = LoggerFactory.getLogger(WKNDCustomWorkflow.class);
+    private final Logger LOGGER = LoggerFactory.getLogger(WKNDCustomWorkflow.class);
 
     @Override
     public void execute(WorkItem workItem, WorkflowSession workflowSession, MetaDataMap metaDataMap) throws WorkflowException {
-        logger.info("Custom Workflow Process for WKND Project");
+        LOGGER.info("Custom Workflow Process for WKND Project");
 
         String payloadPath = workItem.getWorkflowData().getPayload().toString();
-        logger.info("Custom Workflow Path" + payloadPath);
+        LOGGER.info("Custom Workflow Path" + payloadPath);
         ResourceResolver resourceResolver = workflowSession.adaptTo(ResourceResolver.class);
         Resource resource = resourceResolver.getResource(payloadPath);
         Page page = resource.adaptTo(Page.class);

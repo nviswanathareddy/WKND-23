@@ -23,14 +23,17 @@ import java.util.Map;
                 "service.vendor=WKND"
         })
 
-public class DamAssetEventListener implements EventHandler {
-    private static final Logger log = LoggerFactory.getLogger(DamAssetEventListener.class);
+public class WKNDDamAssetEventListener implements EventHandler {
+    private static final Logger LOGGER = LoggerFactory.getLogger(WKNDDamAssetEventListener.class);
 
     @Reference
     private ResourceResolverFactory resourceResolverFactory;
 
     @Override
     public void handleEvent(Event event) {
+
+        LOGGER.info("Custom Workflow Process to Add filename Property for Asset Metadata in WKND Project");
+
         String resourceType = (String) event.getProperty("resourceType");
         String path = (String) event.getProperty("path");
 
@@ -39,14 +42,14 @@ public class DamAssetEventListener implements EventHandler {
             String metadataPath = jcrContentPath + "/metadata";
 
             if (event.getTopic().equals("org/apache/sling/api/resource/Resource/ADDED")) {
-                log.info("New asset added to DAM: {}", path);
-                log.info("jcr:content path: {}", jcrContentPath);
-                log.info("Metadata node path: {}", metadataPath);
+                LOGGER.info("New asset added to DAM: {}", path);
+                LOGGER.info("jcr:content path: {}", jcrContentPath);
+                LOGGER.info("Metadata node path: {}", metadataPath);
                 setFilenameAsTitle(metadataPath, path);
             } else if (event.getTopic().equals("org/apache/sling/api/resource/Resource/CHANGED")) {
-                log.info("Asset modified in DAM: {}", path);
-                log.info("jcr:content path: {}", jcrContentPath);
-                log.info("Metadata node path: {}", metadataPath);
+                LOGGER.info("Asset modified in DAM: {}", path);
+                LOGGER.info("jcr:content path: {}", jcrContentPath);
+                LOGGER.info("Metadata node path: {}", metadataPath);
                 setFilenameAsTitle(metadataPath, path);
             }
         }
@@ -61,15 +64,15 @@ public class DamAssetEventListener implements EventHandler {
                     String processedTitle = getProcessedTitle(assetPath);
                     metadataNode.setProperty("title", processedTitle);
                     metadataNode.getSession().save();
-                    log.info("Title property updated with the processed filename.");
+                    LOGGER.info("Title property updated with the processed filename." + processedTitle);
                 } else {
-                    log.warn("Unable to adapt metadataResource to a Node.");
+                    LOGGER.warn("Unable to adapt metadataResource to a Node.");
                 }
             } else {
-                log.warn("Metadata resource not found at path: {}", metadataPath);
+                LOGGER.warn("Metadata resource not found at path: {}", metadataPath);
             }
         } catch (Exception e) {
-            log.error("Error while updating title property with the processed filename: {}", e.getMessage(), e);
+            LOGGER.error("Error while updating title property with the processed filename: {}", e.getMessage(), e);
         }
     }
 

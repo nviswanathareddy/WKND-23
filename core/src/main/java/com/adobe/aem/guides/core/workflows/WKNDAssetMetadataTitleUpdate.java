@@ -25,14 +25,14 @@ import javax.jcr.Session;
 })
 public class WKNDAssetMetadataTitleUpdate implements WorkflowProcess {
 
-    private final Logger logger = LoggerFactory.getLogger(WKNDAssetMetadataTitleUpdate.class);
+    private final Logger LOGGER = LoggerFactory.getLogger(WKNDAssetMetadataTitleUpdate.class);
 
     @Override
     public void execute(WorkItem workItem, WorkflowSession workflowSession, MetaDataMap metaDataMap) throws WorkflowException {
-        logger.info("Custom Workflow Process to Update Title for Asset Metadata in WKND Project");
+        LOGGER.info("Custom Workflow Process to Update Title for Asset Metadata in WKND Project");
 
         String payloadPath = workItem.getWorkflowData().getPayload().toString();
-        logger.info("Asset Workflow Path: " + payloadPath);
+        LOGGER.info("Asset Workflow Path: " + payloadPath);
 
         // Initialize resourceResolver and session
         ResourceResolver resourceResolver = null;
@@ -56,11 +56,11 @@ public class WKNDAssetMetadataTitleUpdate implements WorkflowProcess {
                 if (metadataNode.hasProperty("dc:title")) {
                     Property titleProperty = metadataNode.getProperty("dc:title");
                     String title = titleProperty.getString();
-                    logger.info("Asset dc:title property: " + title);
+                    LOGGER.info("Asset dc:title property: " + title);
                     // You can now use the 'title' variable as needed in your workflow process
                     metadataNode.setProperty("title", title);
                     session.save();
-                    logger.info("Asset dc:title property set to title property: " + title);
+                    LOGGER.info("Asset dc:title property set to title property: " + title);
                 } else {
                     // If dc:title property is not found, generate title from filename and set it
                     String filename = asset.getName();
@@ -68,13 +68,13 @@ public class WKNDAssetMetadataTitleUpdate implements WorkflowProcess {
 
                     metadataNode.setProperty("title", title);
                     session.save();
-                    logger.info("title property added with value: " + title);
+                    LOGGER.info("title property added with value: " + title);
                 }
             } else {
-                logger.warn("Invalid payload resource or not an asset.");
+                LOGGER.warn("Invalid payload resource or not an asset.");
             }
         } catch (RepositoryException e) {
-            logger.error("Error while getting dc:title property: " + e.getMessage(), e);
+            LOGGER.error("Error while getting dc:title property: " + e.getMessage(), e);
         } finally {
             // Make sure to close the resourceResolver and session properly to avoid resource leaks
             if (resourceResolver != null) {
