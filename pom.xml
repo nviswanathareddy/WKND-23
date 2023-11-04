@@ -48,6 +48,10 @@
         <bnd.version>5.0.0</bnd.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <!-- SonarQube Server Details -->
+        <sonar.host.url>http://172.105.37.112:9000/</sonar.host.url>
+        <sonar.login>admin</sonar.login>
+        <sonar.password>admin123</sonar.password>
     </properties>
 
     <build>
@@ -734,5 +738,18 @@ Bundle-DocURL:
             </dependency>
         </dependencies>
     </dependencyManagement>
+   <!-- Distribution Management -->
+  	<distributionManagement>
+	    <repository>
+	      <id>nexus</id>
+	      <name>WKND AEM Guides - Releases</name>
+	      <url>http://45.79.121.132:8081/repository/WKND_AEM_Guides-Releases/</url>
+	    </repository> 
+	    <snapshotRepository>
+	      <id>nexus</id>
+	      <name>WKND AEM Guides - Snapshot</name>
+	      <url>http://45.79.121.132:8081/repository/WKND_AEM_Guides-Snapshots/</url>
+	    </snapshotRepository> 
+	  </distributionManagement>
 
 </project>
