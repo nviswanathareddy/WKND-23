@@ -1,6 +1,3 @@
-<!-- /apps/example/components/rss/rssFeed.html -->
-
-
 <sly data-sly-use.rss="com.adobe.aem.guides.core.models.RSSFeedModel">
     <div class="rss-feed">
         <sly data-sly-test="${rss.items.size > 0}">
@@ -24,6 +21,8 @@
         <sly data-sly-test="${rss.items.size == 0}">
             <p>Error loading RSS feed. Please check the URL or try again later.</p>
         </sly>
+        <sly data-sly-test="${rss.error}">
+            <p>Error loading RSS feed. Please check the URL or try again later.</p>
+        </sly>
     </div>
 </sly>
-

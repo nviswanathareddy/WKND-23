@@ -13,6 +13,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,6 +40,8 @@ public class RSSFeedModel {
     private String[] feedUrls;
 
     private final List<RSSItem> items = new ArrayList<>();
+
+    private boolean isError = false;
 
     @PostConstruct
     protected void init() {
@@ -75,8 +78,12 @@ public class RSSFeedModel {
                     items.add(item);
                 }
             }
+        } catch (UnknownHostException e) {
+            LOG.error("Unknown host exception while processing feed: {}", feedUrl, e);
+            isError = true;
         } catch (Exception e) {
             LOG.error("Error processing feed: {}", feedUrl, e);
+            isError = true;
         }
     }
 
@@ -121,6 +128,10 @@ public class RSSFeedModel {
         return items;
     }
 
+    public boolean isError() {
+        return isError;
+    }
+
     private boolean isConnectionSuccessful(String feedUrl) {
         try {
             URL url = new URL(feedUrl);
@@ -128,8 +139,13 @@ public class RSSFeedModel {
             connection.setRequestMethod("HEAD");
             int responseCode = connection.getResponseCode();
             return responseCode == HttpURLConnection.HTTP_OK;
+        } catch (UnknownHostException e) {
+            LOG.error("Unknown host exception while checking connection to feed: {}", feedUrl, e);
+            isError = true;
+            return false;
         } catch (Exception e) {
             LOG.error("Error checking connection to feed: {}", feedUrl, e);
+            isError = true;
             return false;
         }
     }
