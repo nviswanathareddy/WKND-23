@@ -5,6 +5,12 @@ import org.apache.sling.api.resource.Resource;
 import org.apache.sling.models.annotations.DefaultInjectionStrategy;
 import org.apache.sling.models.annotations.Model;
 import org.apache.sling.models.annotations.injectorspecific.ValueMapValue;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -14,18 +20,10 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 @Model(adaptables = Resource.class, defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL)
@@ -38,6 +36,9 @@ public class RSSFeedModel {
 
     @ValueMapValue
     private String[] feedUrls;
+
+    @ValueMapValue
+    private String numberOfItems;
 
     private final List<RSSItem> items = new ArrayList<>();
 
@@ -65,6 +66,15 @@ public class RSSFeedModel {
             URL url = new URL(feedUrl);
             InputStream is = url.openConnection().getInputStream();
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+
+            // Disable XML external entities
+            dbFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+            dbFactory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+            dbFactory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+            dbFactory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+            dbFactory.setXIncludeAware(false);
+            dbFactory.setExpandEntityReferences(false);
+
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
             Document doc = dBuilder.parse(is);
             doc.getDocumentElement().normalize();
@@ -122,6 +132,10 @@ public class RSSFeedModel {
             creators.add(creatorNodes.item(i).getTextContent());
         }
         return creators;
+    }
+
+    public String getNumberOfItems() {
+        return numberOfItems;
     }
 
     public List<RSSItem> getItems() {
